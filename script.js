@@ -3,7 +3,14 @@ const itemInput = document.querySelector('#item-input');
 const itemList = document.querySelector('#item-list');
 const itemClear = document.querySelector('#clear');
 const itemFilter = document.querySelector('#filter');
+const formBtn = itemForm.querySelector('button')
+let isEditMode = false;
 
+function displayItems() {
+    const itemsFromStorage = getItemsFromStorage()
+    itemsFromStorage.forEach(item => addItemToDOM(item))
+    checkUI()
+}
 
 function onAddItemSubmit(e) {
     e.preventDefault();
@@ -12,6 +19,20 @@ function onAddItemSubmit(e) {
     if (newItem === '') {
         alert('Please add an item');
         return;
+    }
+
+    if (isEditMode) {
+        const itemToEdit = itemList.querySelector('.edit-mode')
+
+        removeItemFromStorage(itemToEdit.textContent);
+        itemToEdit.classList.remove('.edit-mode');
+        itemToEdit.remove();
+        isEditMode = false;
+    } else {
+        if (checkIfItemExists(newItem)) {
+            alert('That item already exists!');
+            return;
+        }
     }
 
     addItemToDOM(newItem);
@@ -67,23 +88,61 @@ function getItemsFromStorage() {
     return itemsFromStorage;
 }
 
-function removeItem(e) {
+function onClickItem(e) {
     if (e.target.parentElement.classList.contains('remove-item')) {
-        if (confirm('Are you sure?')) {
-            e.target.parentElement.parentElement.remove();
-        }
+        removeItem(e.target.parentElement.parentElement)
+    } else {
+        setItemToEdit(e.target)
     }
-    checkUI();
+}
+
+function checkIfItemExists(item) {
+    const itemsFromStorage = getItemsFromStorage();
+    return (itemsFromStorage.includes(item))
+}
+
+function setItemToEdit(item) {
+    isEditMode = true;
+
+    itemList.querySelectorAll('li').forEach(i => i.classList.remove('edit-mode'))
+
+    item.classList.add('edit-mode');
+    formBtn.innerHTML = '<i class="fa-solid fa-pen"></i>   Update Item';
+    formBtn.style.backgroundColor = '#228B22'
+    itemInput.value = item.textContent;
+}
+
+function removeItem(item) {
+    if (confirm('Are you sure?')) {
+        item.remove();
+
+        removeItemFromStorage(item.textContent);
+
+        checkUI();
+    }
+}
+
+function removeItemFromStorage(item) {
+    let itemsFromStorage = getItemsFromStorage()
+
+    itemsFromStorage = itemsFromStorage.filter((i) => i !== item)
+
+    localStorage.setItem('items', JSON.stringify(itemsFromStorage))
 }
 
 function clearItems() {
     while (itemList.firstChild) {
         itemList.removeChild(itemList.firstChild);
     }
+
+    localStorage.removeItem('items')
+
     checkUI();
 }
 
 function checkUI() {
+    itemInput.value = '';
+
     const items = itemList.querySelectorAll('li');
     if (items.length === 0) {
         itemClear.style.display = 'none';
@@ -92,6 +151,11 @@ function checkUI() {
         itemClear.style.display = 'block';
         itemFilter.style.display = 'block';
     }
+
+    formBtn.innerHTML = '<i class="fa=solid fa-plus"</i>  Add Item';
+    formBtn.style.backgroundColor = '#333'
+
+    isEditMode = false;
 }
 
 function filterItems(e) {
@@ -109,10 +173,15 @@ function filterItems(e) {
     });
 }
 
-// Event Listeners
-itemForm.addEventListener('submit', onAddItemSubmit);
-itemList.addEventListener('click', removeItem);
-itemClear.addEventListener('click', clearItems);
-itemFilter.addEventListener('input', filterItems);
+function init() {
 
-checkUI();
+    // Event Listeners
+    itemForm.addEventListener('submit', onAddItemSubmit);
+    itemList.addEventListener('click', onClickItem);
+    itemClear.addEventListener('click', clearItems);
+    itemFilter.addEventListener('input', filterItems);
+    document.addEventListener('DOMContentLoaded', displayItems)
+    checkUI();
+}
+
+init();

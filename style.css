@@ -34,7 +34,10 @@ header h1 {
   padding: 20px;
 }
 
-/* Form & Input */
+.edit-mode {
+  color: #ccc;
+}
+
 .form-input {
   width: 100%;
   font-size: 18px;
@@ -57,7 +60,6 @@ header h1 {
   outline: none;
 }
 
-/* Buttons */
 .btn {
   background-color: #333;
   color: #fff;
@@ -100,7 +102,6 @@ header h1 {
   color: red;
 }
 
-/* Items */
 
 .items {
   margin-top: 20px;
