@@ -29,8 +29,5 @@ Seeking feedback on:
 - UX and UI design.
 - Responsiveness issues.
 
-## Code structure and readability
-Design and user experience
-Responsiveness issues
-License
+## License
 This project is for educational purposes only and not licensed for commercial use.
