@@ -15,7 +15,7 @@ This JavaScript application is a simple Shopping List app that allows users to a
 2. Open the `index.html` file in your web browser.
 
 Alternatively live website:
-- https://shopping-list-ks.netlify.app/
+- [Shopping List](https://shopping-list-ks.netlify.app/)
 
 ## Usage
 - To add a new item, type the item in the input field and press Enter or click the "Add Item" button.
